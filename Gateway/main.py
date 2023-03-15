@@ -1,61 +1,70 @@
-#Import package
-import paho.mqtt.client as mqtt
-import json
-import time
-import serial .tools .list_ports
-import random
 import sys
-from datetime import datetime
+import random
+import time
+import serial . tools . list_ports
+import paho.mqtt.client as mqtt
 
+from Adafruit_IO import MQTTClient
 
+#Adafruit_io
+AIO_FEED_IDS = ["farm-button-led", "farm-button-pump", "farm-humi", "farm-light", "farm-soil-humi", "farm-temp"]
+AIO_USERNAME = "teambaton"
+AIO_KEY = "aio_Jsbj78KF7pj7sgelX7K8C9M6Ljnc"
 
-#Connect to server
+#mqtt ohstem
 MQTT_SERVER = "mqtt.ohstem.vn"
 MQTT_PORT = 1883
 MQTT_USERNAME = "nhombaton"
 MQTT_PASSWORD = ""
-
-#Feed data
-TEMP = "nhombaton/feeds/V1"
-HUMI = "nhombaton/feeds/V2"
-SOIL_HUMI = "nhombaton/feeds/V3"
-LIGHT = "nhombaton/feeds/V4"
-LED = "nhombaton/feeds/V10"
-PUMP = "nhombaton/feeds/V11"
+MQTT_TOPIC_TEMP = "nhombaton/feeds/V1"
+MQTT_TOPIC_HUMI = "nhombaton/feeds/V2"
+MQTT_TOPIC_SOIL_HUMI = "nhombaton/feeds/V3"
+MQTT_TOPIC_LIGHT = "nhombaton/feeds/V4"
+MQTT_TOPIC_PUMP = "nhombaton/feeds/V10"
+MQTT_TOPIC_LED = "nhombaton/feeds/V11"
 
 
-#Message variables
-temp = ""
-humi = ""
-soil_humi = ""
-light = ""
-led = ""
-pump = ""
-isMicrobitConnected = False
+# functional
 
-def connect(client):
-    print("Ket noi thanh cong...")
-    client.subcrible(TEMP)
+def connected(client):
+    for feed in AIO_FEED_IDS:
+        client.subscribe(feed)
+    
+def mqtt_connected(client, userdata, flags, rc):
+    client.subscribe(MQTT_TOPIC_TEMP)
+    client.subscribe(MQTT_TOPIC_HUMI)
+    client.subscribe(MQTT_TOPIC_SOIL_HUMI)
+    client.subscribe(MQTT_TOPIC_LIGHT)
+    client.subscribe(MQTT_TOPIC_PUMP)
+    client.subscribe(MQTT_TOPIC_LED)
+def subscribe(client , userdata , mid , granted_qos):
+    print("feed ada",mid,"subscribe thanh cong ...")
 
-def  subscribe(client , userdata , mid , granted_qos):
-    print("Subcribe thanh cong...")
-def  disconnected(client):
-    print("Ngat ket noi...")
+def mqtt_subscribed(client, userdata, mid, granted_qos):
+   print("feed ohstem",mid,"subscribe thanh cong ...")
+
+def disconnected(client):
+    print("Ngat ket noi ...")
     sys.exit (1)
-def  message(client , feed_id , payload):
-    print("Nhan du lieu: " + payload)
-    if isMicrobitConnected:
-        serial.write((str(payload) + "#").encode())
+
+def message(client , feed_id , payload):
+    print("!"+feed_id + ":" + payload + "#")
+
+
+client = MQTTClient(AIO_USERNAME , AIO_KEY)
+client.on_connect = connected
+client.on_disconnect = disconnected
+client.on_message = message
+client.on_subscribe = subscribe
+client.connect()
+client.loop_background()
 
 mqttClient = mqtt.Client()
 mqttClient.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
 mqttClient.connect(MQTT_SERVER, int(MQTT_PORT), 60)
-
-mqttClient.on_connect = connect
-mqttClient.on_subscribe = subscribe
-
+mqttClient.on_connect = mqtt_connected
+mqttClient.on_subscribe = mqtt_subscribed
 mqttClient.loop_start()
-counter = 0 
 
 while True:
-    time.sleep(1)
+    pass
