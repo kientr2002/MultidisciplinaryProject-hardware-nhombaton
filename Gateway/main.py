@@ -16,6 +16,15 @@ MQTT_SERVER = "mqtt.ohstem.vn"
 MQTT_PORT = 1883
 MQTT_USERNAME = "nhombaton"
 MQTT_PASSWORD = ""
+link = "teambaton/feeds/"
+list_feed = {
+    "V1/",
+    "V2/",
+    "V3/",
+    "V4/",
+    "V10/",
+    "V11"
+}
 MQTT_TOPIC_TEMP = "nhombaton/feeds/V1"
 MQTT_TOPIC_HUMI = "nhombaton/feeds/V2"
 MQTT_TOPIC_SOIL_HUMI = "nhombaton/feeds/V3"
@@ -41,7 +50,7 @@ def mqtt_disconnected(client):
     sys.exit (5)
 
 def on_message(client, userdata, message):
-    print(str(message.payload.decode("utf-8")))
+    print(str(message.topic) + " : " + str(message.payload.decode("utf-8")))
 
 mqttClient = mqtt.Client()
 mqttClient.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
