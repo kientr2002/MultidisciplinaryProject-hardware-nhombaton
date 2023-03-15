@@ -25,11 +25,6 @@ MQTT_TOPIC_LED = "nhombaton/feeds/V11"
 
 
 # functional
-
-def connected(client):
-    for feed in AIO_FEED_IDS:
-        client.subscribe(feed)
-    
 def mqtt_connected(client, userdata, flags, rc):
     client.subscribe(MQTT_TOPIC_TEMP)
     client.subscribe(MQTT_TOPIC_HUMI)
@@ -37,34 +32,27 @@ def mqtt_connected(client, userdata, flags, rc):
     client.subscribe(MQTT_TOPIC_LIGHT)
     client.subscribe(MQTT_TOPIC_PUMP)
     client.subscribe(MQTT_TOPIC_LED)
-def subscribe(client , userdata , mid , granted_qos):
-    print("feed ada",mid,"subscribe thanh cong ...")
 
 def mqtt_subscribed(client, userdata, mid, granted_qos):
    print("feed ohstem",mid,"subscribe thanh cong ...")
 
-def disconnected(client):
+def mqtt_disconnected(client):
     print("Ngat ket noi ...")
-    sys.exit (1)
+    sys.exit (5)
 
-def message(client , feed_id , payload):
-    print("!"+feed_id + ":" + payload + "#")
-
-
-client = MQTTClient(AIO_USERNAME , AIO_KEY)
-client.on_connect = connected
-client.on_disconnect = disconnected
-client.on_message = message
-client.on_subscribe = subscribe
-client.connect()
-client.loop_background()
+def on_message(client, userdata, message):
+    print(str(message.payload.decode("utf-8")))
 
 mqttClient = mqtt.Client()
 mqttClient.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
 mqttClient.connect(MQTT_SERVER, int(MQTT_PORT), 60)
 mqttClient.on_connect = mqtt_connected
 mqttClient.on_subscribe = mqtt_subscribed
+mqttClient.on_message = on_message
+
 mqttClient.loop_start()
+counter = 0
+
 
 while True:
     pass
