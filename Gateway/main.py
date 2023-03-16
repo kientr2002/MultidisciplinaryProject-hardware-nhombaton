@@ -16,31 +16,20 @@ MQTT_SERVER = "mqtt.ohstem.vn"
 MQTT_PORT = 1883
 MQTT_USERNAME = "nhombaton"
 MQTT_PASSWORD = ""
-link = "teambaton/feeds/"
-list_feed = {
-    "V1/",
-    "V2/",
-    "V3/",
-    "V4/",
-    "V10/",
+link = "nhombaton/feeds/"
+list_feed = [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V10",
     "V11"
-}
-MQTT_TOPIC_TEMP = "nhombaton/feeds/V1"
-MQTT_TOPIC_HUMI = "nhombaton/feeds/V2"
-MQTT_TOPIC_SOIL_HUMI = "nhombaton/feeds/V3"
-MQTT_TOPIC_LIGHT = "nhombaton/feeds/V4"
-MQTT_TOPIC_PUMP = "nhombaton/feeds/V10"
-MQTT_TOPIC_LED = "nhombaton/feeds/V11"
-
+]
 
 # functional
 def mqtt_connected(client, userdata, flags, rc):
-    client.subscribe(MQTT_TOPIC_TEMP)
-    client.subscribe(MQTT_TOPIC_HUMI)
-    client.subscribe(MQTT_TOPIC_SOIL_HUMI)
-    client.subscribe(MQTT_TOPIC_LIGHT)
-    client.subscribe(MQTT_TOPIC_PUMP)
-    client.subscribe(MQTT_TOPIC_LED)
+    for feed in list_feed:
+        client.subscribe(link + feed)
 
 def mqtt_subscribed(client, userdata, mid, granted_qos):
    print("feed ohstem",mid,"subscribe thanh cong ...")
@@ -50,7 +39,7 @@ def mqtt_disconnected(client):
     sys.exit (5)
 
 def on_message(client, userdata, message):
-    print(str(message.topic) + " : " + str(message.payload.decode("utf-8")))
+    print(str(message.topic)[16:] + ":" + str(message.payload.decode("utf-8")))
 
 mqttClient = mqtt.Client()
 mqttClient.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
@@ -64,4 +53,16 @@ counter = 0
 
 
 while True:
+    # print("Nhap du lieu ma ban muon thay doi (1 la pump, 2 la led):")
+    # type_input = input()
+    # value = 0
+    # if type_input == 1:
+    #     print("Nhap du lieu pump:")
+    #     value = input()
+    #     mqttClient.publish("nhombaton/feeds/V10",value)
+    # elif type_input == 2:
+    #     print("Nhap du lieu gia tri LED:")
+    #     value = input()
+    #     mqttClient.publish("nhombaton/feeds/V11",value)
+    # print("Da cap nhat du lieu")
     pass
