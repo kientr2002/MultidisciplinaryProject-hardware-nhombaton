@@ -26,6 +26,7 @@ list_feed = [
     "V10",
     "V11"
 ]
+localtime = time.asctime( time.localtime(time.time()) )
 
 # functional
 def subscribe(client , userdata , mid , granted_qos):
@@ -50,8 +51,9 @@ def mqtt_disconnected(client):
     sys.exit (5)
 value = ""
 def on_message(client, userdata, message):
-    print(str(message.topic)[16:] + ":" + str(message.payload.decode("utf-8")))
+    print(localtime, ":", str(message.topic)[16:] + ":" + str(message.payload.decode("utf-8")))
     value = str(message.payload.decode("utf-8"))
+    
 
 mqttClient = mqtt.Client()
 mqttClient.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
