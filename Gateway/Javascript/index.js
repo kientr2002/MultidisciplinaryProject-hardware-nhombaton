@@ -1,4 +1,11 @@
 const mqtt = require('mqtt');
+const express = require('express');
+const app = express();
+const http = require('http');
+const port = process.env.PORT || 3000;
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
 
 const MQTT_SERVER = "mqtt.ohstem.vn";
 const MQTT_PORT = 1883;
@@ -37,6 +44,38 @@ client.on('connect', () => {
 });
 
 client.on('message', (topic, message) => {
-  console.log(`Nhan du lieu: ${message.toString()}`);
+  console.log(`Nhan du lieu: ${topic.toString()} ${message.toString()}`);
   
 });
+
+
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
+
+io.on('connection', (socket) => {
+  socket.on('automationModel', msg => {
+    io.emit('automationModel', msg);
+    client.publish('nhombaton/feeds/V14', msg.toString());
+  });
+});
+
+io.on('connection', (socket) => {
+  socket.on('setLedValue', msg => {
+    io.emit('setLedValue', msg);
+    client.publish('nhombaton/feeds/V12', msg.toString());
+  });
+});
+
+io.on('connection', (socket) => {
+  socket.on('setPumpValue', msg => {
+    io.emit('setPumpValue', msg);
+    client.publish('nhombaton/feeds/V16', msg.toString());
+  });
+});
+
+server.listen(port, () => {
+  console.log(`Socket.IO server running at http://localhost:${port}/`);
+});
+
