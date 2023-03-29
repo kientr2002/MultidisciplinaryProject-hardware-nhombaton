@@ -13,17 +13,18 @@
         border-radius: 5px;
         cursor: pointer;
       }
+
     </style>
   </head>
   <body>
     <ul id="messages"></ul>
     <button id="AutomationButton">Tự động/Thủ công</button>
 
-    <input id="ledValue" type="range" min="0" max="100" step="1" value="50">
-    <button id="ledButton">set LED value</button>
+    <input id="ledValue" type="range" min="0" max="100" step="1" value="50" style="display:none;">
+    <button id="ledButton" style="display:none;">set LED value</button>
 
-    <input id="pumpValue" type="range" min="0" max="100" step="25" value="50">
-    <button id="pumpButton">set PUMP value</button>
+    <input id="pumpValue" type="range" min="0" max="100" step="25" value="50" style="display:none;">
+    <button id="pumpButton" style="display:none;">set PUMP value</button>
     
     <script src="/socket.io/socket.io.js"></script>
 
@@ -37,10 +38,9 @@
       var ledButton = document.getElementById('ledButton');
       var pumpButton = document.getElementById('pumpButton');
 
-      var value = 1;
+      var value = 0;
 
       var messages = document.getElementById('messages');
-
  
       // Automation Model
       AutomationButton.addEventListener('click', function(e) {
@@ -48,9 +48,17 @@
         if (value == 1) {
           value = 0;
           AutomationButton.textContent = 'Tự động';
+          ledValue.style.display = 'none';
+          pumpValue.style.display = 'none';
+          ledButton.style.display = 'none';
+          pumpButton.style.display = 'none';
         } else {
           value = 1;
           AutomationButton.textContent = 'Thủ công';
+          ledValue.style.display = 'block';
+          pumpValue.style.display = 'block';
+          ledButton.style.display = 'block';
+          pumpButton.style.display = 'block';
         }
         socket.emit('automationModel', value);
       });
