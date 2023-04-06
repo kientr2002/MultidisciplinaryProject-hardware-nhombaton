@@ -150,7 +150,7 @@ def on_event_timer_callback_G_o_U_R_C():
   mqtt.publish('V4', LUX)
   print((''.join([str(x) for x in ['!', 'T:', aiot_dht20.dht20_temperature(), '-', 'H:', aiot_dht20.dht20_humidity(), '-', 'S:', round(translate((pin1.read_analog()), 0, 4095, 0, 100)), '-', 'L:', round(translate((pin2.read_analog()), 0, 4095, 0, 100)), '#']])), end =' ')
 
-event_manager.add_timer_event(2000, on_event_timer_callback_G_o_U_R_C)
+event_manager.add_timer_event(5000, on_event_timer_callback_G_o_U_R_C)
 
 def on_event_timer_callback_x_b_c_I_Q():
   global HOUR, th_C3_B4ng_tin, MINUTE, VAL_LED, VAL_PUMP_TC, RT, VAL_PUMP, RH, TURN_ON_SET, SET_PUMP, START, VAL_LED_TC, SM, LUX, SET_LED
