@@ -1,0 +1,16 @@
+Bảng điều khiển: multidisciplinary
+
+Username: nhombaton
+
+Hiển Thị:
+Nhiệt độ: nhombaton/feeds/V1
+Độ ẩm: nhombaton/feeds/V2
+Ánh Sáng: nhombaton/feeds/V4
+Độ Ẩm Đất: nhombaton/feeds/V3
+Máy Bơm: nhombaton/feeds/V15
+Đèn LED: nhombaton/feeds/V13
+
+Công Tắc:
+Khởi động thủ công: nhombaton/feeds/V14
+Máy Bơm: nhombaton/feeds/V16
+Đèn LED: nhombaton/feeds/V12

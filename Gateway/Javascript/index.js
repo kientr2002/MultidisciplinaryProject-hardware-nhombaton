@@ -45,7 +45,17 @@ client.on('connect', () => {
 
 client.on('message', (topic, message) => {
   console.log(`Nhan du lieu: ${topic.toString()} ${message.toString()}`);
-  
+  if(topic.toString() == 'nhombaton/feeds/V1'){
+    io.emit('templateValue', message.toString());
+  } else if(topic.toString() == 'nhombaton/feeds/V2'){
+    io.emit('humiValue', message.toString());
+  } else if(topic.toString() == 'nhombaton/feeds/V3'){
+    io.emit('SandHumiValue', message.toString());
+  } else if(topic.toString() == 'nhombaton/feeds/V4'){
+    io.emit('lightValue', message.toString());
+  } else {
+    //NOTHING
+  }
 });
 
 
